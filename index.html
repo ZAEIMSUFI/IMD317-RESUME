@@ -7,6 +7,118 @@
     <title>Muhammad Zaeim Sufi - Portfolio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Add to prevent horizontal scroll */
+        body {
+            overflow-x: hidden;
+        }
+        /* Spotify toggle icon change */
+        #spotifyToggleIcon {
+            content: "\f001"; /* Music icon */
+        }
+        /* General improvements for better look */
+        .hero-banner {
+            background-size: cover;
+            background-position: center;
+        }
+        .skill-card, .quick-card-enhanced {
+            transition: transform 0.3s ease;
+        }
+        .skill-card:hover, .quick-card-enhanced:hover {
+            transform: translateY(-5px);
+        }
+        /* From Uiverse.io by vinodjangid07 */
+        .cardContainer {
+            width: fit-content;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            position: relative;
+            width: 220px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 10px;
+            border-radius: 10px;
+            backdrop-filter: blur(30px);
+            background-color: rgba(65, 65, 65, 0.308);
+            border: 1px solid rgba(255, 255, 255, 0.089);
+            cursor: pointer;
+        }
+        .city {
+            font-weight: 700;
+            font-size: 0.9em;
+            letter-spacing: 1.2px;
+            color: white;
+        }
+        .weather {
+            font-weight: 500;
+            font-size: 0.7em;
+            letter-spacing: 1.2px;
+            color: rgb(197, 197, 197);
+        }
+        .temp {
+            font-size: 1.8em;
+            color: white;
+        }
+        .minmaxContainer {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .min,
+        .max {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 0px 20px;
+            gap: 4px;
+        }
+        .max {
+            align-items: flex-start;
+            border-left: 2px solid white;
+        }
+        .maxHeading,
+        .minHeading {
+            font-size: 0.7em;
+            font-weight: 600;
+            color: white;
+        }
+        .maxTemp,
+        .minTemp {
+            font-size: 0.6em;
+            font-weight: 500;
+            color: rgb(197, 197, 197);
+        }
+        .cardContainer::before {
+            width: 100px;
+            height: 100px;
+            content: "";
+            position: absolute;
+            background-color: rgb(144, 161, 255);
+            z-index: -1;
+            border-radius: 50%;
+            left: 100px;
+            top: 50px;
+            transition: all 1s;
+        }
+        .cardContainer:hover::before {
+            transform: translate(-50px, 50px);
+        }
+        .weather-icon {
+            font-size: 50px;
+            color: white;
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body class="font-modern">
     <!-- Footer -->
@@ -37,6 +149,8 @@
         <div class="datetime-time" id="currentTime">--:--:--</div>
     </div>
 
+    <!-- Removed old weather widget to fix overlapping -->
+
     <!-- Spotify Widget -->
     <div class="spotify-widget" id="spotifyWidget">
         <div class="spotify-header">
@@ -46,7 +160,7 @@
                 <span class="spotify-badge">Live</span>
             </div>
             <button class="spotify-toggle" onclick="toggleSpotify()">
-                <i class="fas fa-minus" id="spotifyToggleIcon"></i>
+                <i class="fas fa-music" id="spotifyToggleIcon"></i> <!-- Changed to music icon -->
             </button>
         </div>
         <div class="spotify-player-container">
@@ -57,6 +171,8 @@
             <button class="spotify-btn" onclick="nextTrack()">Next <i class="fas fa-forward"></i></button>
         </div>
     </div>
+
+    <!-- Removed old weather widget to fix overlapping -->
 
     <!-- Control Buttons -->
     <div class="control-buttons">
@@ -86,6 +202,30 @@
                 <div class="dropdown-option" onclick="setFont('sporty', this)"><div class="font-preview sporty">Aa</div><div class="option-label">Sporty</div></div>
             </div>
         </div>
+        <div class="weather-selector">
+            <button class="control-btn-main" onclick="toggleWeatherDropdown()"><i class="fas fa-cloud-sun"></i></button>
+            <div class="control-dropdown" id="weatherDropdown">
+                <div class="dropdown-title">Weather <button class="weather-refresh" onclick="getWeather()" title="Refresh Weather"><i class="fas fa-refresh"></i></button></div>
+                <div class="cardContainer">
+                    <div class="card">
+                        <p class="city" id="weatherCity">Loading...</p>
+                        <p class="weather" id="weatherDesc">Fetching weather...</p>
+                        <i class="fas fa-cloud-sun weather-icon"></i>
+                        <p class="temp" id="weatherTemp">--°C</p>
+                        <div class="minmaxContainer">
+                            <div class="min">
+                                <p class="minHeading">Min</p>
+                                <p class="minTemp" id="weatherMin">--°C</p>
+                            </div>
+                            <div class="max">
+                                <p class="maxHeading">Max</p>
+                                <p class="maxTemp" id="weatherMax">--°C</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Navigation -->
@@ -102,42 +242,179 @@
     <!-- Page Content -->
     <div class="page">
         <div class="page-content">
-            <div class="hero">
-                <h1 class="hero-title">Muhammad Zaeim Sufi</h1>
-                <p class="hero-subtitle">Information Management Student | Multimedia Designer | Aspiring Developer</p>
+            <!-- Enhanced Hero Section with Banner -->
+            <div class="hero-banner">
+                <div class="hero-banner-image"></div>
+                <div class="hero-banner-overlay"></div>
+                <div class="hero-banner-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-circle"></i> Available for Internship
+                    </div>
+                    <h1 class="hero-title-enhanced">Muhammad Zaeim Sufi</h1>
+                    <p class="hero-subtitle-enhanced">Information Management Student | Multimedia Designer | Aspiring Developer</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">3+</div>
+                            <div class="stat-label">Years Experience</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">15+</div>
+                            <div class="stat-label">Projects Completed</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5+</div>
+                            <div class="stat-label">Skills Mastered</div>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <a href="projects.html" class="hero-btn primary">
+                            <i class="fas fa-code"></i> View Projects
+                        </a>
+                        <a href="biodata.html" class="hero-btn secondary">
+                            <i class="fas fa-user"></i> About Me
+                        </a>
+                    </div>
+                </div>
+                <div class="scroll-indicator">
+                    <div class="mouse">
+                        <div class="wheel"></div>
+                    </div>
+                    <div class="scroll-text">Scroll to explore</div>
+                </div>
             </div>
-            
-            <div class="quick-links">
-                <a href="biodata.html" class="quick-card">
-                    <div class="quick-card-icon"><i class="fas fa-user-circle"></i></div>
-                    <div class="quick-card-title">About Me</div>
-                    <div class="quick-card-desc">Learn about my background and profile</div>
-                </a>
-                <a href="experience.html" class="quick-card">
-                    <div class="quick-card-icon"><i class="fas fa-briefcase"></i></div>
-                    <div class="quick-card-title">Experience</div>
-                    <div class="quick-card-desc">View my professional work history</div>
-                </a>
-                <a href="projects.html" class="quick-card">
-                    <div class="quick-card-icon"><i class="fas fa-code"></i></div>
-                    <div class="quick-card-title">Projects</div>
-                    <div class="quick-card-desc">Explore my academic and personal projects</div>
-                </a>
-                <a href="education.html" class="quick-card">
-                    <div class="quick-card-icon"><i class="fas fa-graduation-cap"></i></div>
-                    <div class="quick-card-title">Education</div>
-                    <div class="quick-card-desc">See my academic achievements</div>
-                </a>
-                <a href="family.html" class="quick-card">
-                    <div class="quick-card-icon"><i class="fas fa-users"></i></div>
-                    <div class="quick-card-title">Family</div>
-                    <div class="quick-card-desc">Meet my family members</div>
-                </a>
-                <a href="gallery.html" class="quick-card">
-                    <div class="quick-card-icon"><i class="fas fa-images"></i></div>
-                    <div class="quick-card-title">Gallery</div>
-                    <div class="quick-card-desc">View my photo collection</div>
-                </a>
+
+            <!-- Featured Skills Section -->
+            <div class="featured-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-star"></i> Core Competencies
+                    </h2>
+                    <p class="section-subtitle">What I bring to the table</p>
+                </div>
+                <div class="skills-showcase">
+                    <div class="skill-card">
+                        <div class="skill-card-icon"><i class="fas fa-palette"></i></div>
+                        <h3>Multimedia Design</h3>
+                        <p>Expert in graphic design, video editing, and visual storytelling using Adobe Creative Suite</p>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Photoshop</span>
+                            <span class="skill-tag">Illustrator</span>
+                            <span class="skill-tag">Premiere Pro</span>
+                        </div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-card-icon"><i class="fas fa-code"></i></div>
+                        <h3>Web Development</h3>
+                        <p>Building responsive and interactive websites with modern technologies and best practices</p>
+                        <div class="skill-tags">
+                            <span class="skill-tag">HTML/CSS</span>
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">React</span>
+                        </div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-card-icon"><i class="fas fa-database"></i></div>
+                        <h3>Information Management</h3>
+                        <p>Organizing and optimizing data systems for efficient information retrieval and analysis</p>
+                        <div class="skill-tags">
+                            <span class="skill-tag">SQL</span>
+                            <span class="skill-tag">Data Analysis</span>
+                            <span class="skill-tag">Systems Design</span>
+                        </div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-card-icon"><i class="fas fa-camera"></i></div>
+                        <h3>Photography & Videography</h3>
+                        <p>Capturing moments and creating compelling visual narratives through lens and editing</p>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Photography</span>
+                            <span class="skill-tag">Videography</span>
+                            <span class="skill-tag">Color Grading</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Access Cards -->
+            <div class="featured-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-compass"></i> Explore My Portfolio
+                    </h2>
+                    <p class="section-subtitle">Navigate through different sections</p>
+                </div>
+                <div class="quick-links-enhanced">
+                    <a href="biodata.html" class="quick-card-enhanced">
+                        <div class="quick-card-bg"></div>
+                        <div class="quick-card-icon-enhanced"><i class="fas fa-user-circle"></i></div>
+                        <div class="quick-card-content">
+                            <h3 class="quick-card-title-enhanced">About Me</h3>
+                            <p class="quick-card-desc-enhanced">Discover my background, skills, and professional profile</p>
+                            <div class="quick-card-arrow"><i class="fas fa-arrow-right"></i></div>
+                        </div>
+                    </a>
+                    <a href="experience.html" class="quick-card-enhanced">
+                        <div class="quick-card-bg"></div>
+                        <div class="quick-card-icon-enhanced"><i class="fas fa-briefcase"></i></div>
+                        <div class="quick-card-content">
+                            <h3 class="quick-card-title-enhanced">Experience</h3>
+                            <p class="quick-card-desc-enhanced">Review my professional work history and achievements</p>
+                            <div class="quick-card-arrow"><i class="fas fa-arrow-right"></i></div>
+                        </div>
+                    </a>
+                    <a href="projects.html" class="quick-card-enhanced">
+                        <div class="quick-card-bg"></div>
+                        <div class="quick-card-icon-enhanced"><i class="fas fa-code"></i></div>
+                        <div class="quick-card-content">
+                            <h3 class="quick-card-title-enhanced">Projects</h3>
+                            <p class="quick-card-desc-enhanced">Explore my academic and personal project portfolio</p>
+                            <div class="quick-card-arrow"><i class="fas fa-arrow-right"></i></div>
+                        </div>
+                    </a>
+                    <a href="education.html" class="quick-card-enhanced">
+                        <div class="quick-card-bg"></div>
+                        <div class="quick-card-icon-enhanced"><i class="fas fa-graduation-cap"></i></div>
+                        <div class="quick-card-content">
+                            <h3 class="quick-card-title-enhanced">Education</h3>
+                            <p class="quick-card-desc-enhanced">View my academic journey and qualifications</p>
+                            <div class="quick-card-arrow"><i class="fas fa-arrow-right"></i></div>
+                        </div>
+                    </a>
+                    <a href="family.html" class="quick-card-enhanced">
+                        <div class="quick-card-bg"></div>
+                        <div class="quick-card-icon-enhanced"><i class="fas fa-users"></i></div>
+                        <div class="quick-card-content">
+                            <h3 class="quick-card-title-enhanced">Family</h3>
+                            <p class="quick-card-desc-enhanced">Meet the people who support and inspire me</p>
+                            <div class="quick-card-arrow"><i class="fas fa-arrow-right"></i></div>
+                        </div>
+                    </a>
+                    <a href="gallery.html" class="quick-card-enhanced">
+                        <div class="quick-card-bg"></div>
+                        <div class="quick-card-icon-enhanced"><i class="fas fa-images"></i></div>
+                        <div class="quick-card-content">
+                            <h3 class="quick-card-title-enhanced">Gallery</h3>
+                            <p class="quick-card-desc-enhanced">Browse through my creative photography collection</p>
+                            <div class="quick-card-arrow"><i class="fas fa-arrow-right"></i></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <div class="cta-content">
+                    <h2 class="cta-title">Let's Create Something Amazing Together</h2>
+                    <p class="cta-text">I'm currently seeking internship opportunities where I can contribute my skills in multimedia design, web development, and information management.</p>
+                    <div class="cta-buttons">
+                        <a href="mailto:zaeim@example.com" class="cta-btn primary">
+                            <i class="fas fa-envelope"></i> Get In Touch
+                        </a>
+                        <a href="projects.html" class="cta-btn secondary">
+                            <i class="fas fa-folder-open"></i> View My Work
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
