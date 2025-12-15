@@ -40,6 +40,134 @@
             cursor: default;
             transform: none;
         }
+
+        /* Tooltip button (improved) - from Uiverse.io by gharsh11032000 */
+        .card-head { position: relative; } /* ensure proper stacking context */
+        .tooltip-container {
+          --background: #333333;
+          --color: #e8e8e8;
+          position: relative;
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+          font-size: 18px;
+          font-weight: 600;
+          color: var(--color);
+          padding: 0.7em 1.8em;
+          border-radius: 8px;
+          text-transform: uppercase;
+          height: 60px;
+          width: 180px;
+          display: grid;
+          place-items: center;
+          border: 2px solid var(--color);
+          background: transparent;
+          margin-left: 12px; /* keep a gap from title */
+          overflow: visible;
+          z-index: 1000;
+        }
+        .tooltip-container .text {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: grid;
+          place-items: center;
+          transform-origin: -100%;
+          transform: scale(1);
+          transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+          z-index: 2;
+        }
+        .tooltip-container span:last-child {
+          position: absolute;
+          top: 0%;
+          left: 120%; /* start farther right so expansion doesn't overlap title immediately */
+          width: 100%;
+          height: 100%;
+          border-radius: 8px;
+          opacity: 1;
+          background-color: var(--background);
+          z-index: 0;
+          border: 2px solid var(--background);
+          transform: scale(0);
+          transform-origin: 0;
+          transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+          display: grid;
+          place-items: center;
+        }
+        .tooltip-container .tooltip {
+          position: absolute;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          padding: 0.3em 0.6em;
+          opacity: 0;
+          pointer-events: none;
+          transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+          background: var(--background);
+          z-index: 1001; /* ensure tooltip floats above everything */
+          border-radius: 8px;
+          transform-origin: 0 0;
+          text-transform: capitalize;
+          font-weight: 400;
+          font-size: 16px;
+          box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+        }
+        .tooltip-container .tooltip::before {
+          position: absolute;
+          content: "";
+          height: 0.6em;
+          width: 0.6em;
+          bottom: -0.2em;
+          left: 50%;
+          transform: translate(-50%) rotate(45deg);
+          background: var(--background);
+        }
+        .tooltip-container:hover .tooltip {
+          top: -100%;
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+          transform: translateX(-50%) scale(1);
+          animation: shake 0.5s ease-in-out both;
+        }
+        .tooltip-container:hover {
+          box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+          color: white;
+          border-color: transparent;
+        }
+        .tooltip-container:hover span:last-child {
+          transform: scale(1);
+          left: 0; /* expand to cover the original button area smoothly */
+          pointer-events: none; /* prevent background element from stealing pointer events */
+        }
+        .tooltip-container:hover .text {
+          opacity: 0;
+          top: 0%;
+          left: 100%;
+          transform: scale(0);
+        }
+        @keyframes shake {
+          0% { rotate: 0; }
+          25% { rotate: 7deg; }
+          50% { rotate: -7deg; }
+          75% { rotate: 1deg; }
+          100% { rotate: 0; }
+        }
+
+        /* small adjustments for video grid */
+        .gallery-grid, .video-grid { display:flex; gap:12px; margin-top:12px; flex-wrap:wrap; }
+        .gallery-grid .gallery-item, .video-grid .gallery-item { width: calc(25% - 12px); box-sizing: border-box; }
+        .video-grid { display:none; }
+        .video-thumb { width:100%; height:160px; display:flex; align-items:center; justify-content:center; background:#000; color:#fff; border-radius:8px; }
+        .toggle-active { background: var(--accent, #4f46e5); color:#fff; border-color: transparent; }
+
+        @media (max-width:900px) {
+            .gallery-grid .gallery-item, .video-grid .gallery-item { width: calc(50% - 12px); }
+        }
+        @media (max-width:480px) {
+            .gallery-grid .gallery-item, .video-grid .gallery-item { width: 100%; }
+        }
     </style>
 </head>
 <body class="font-modern">
@@ -50,6 +178,10 @@
         <button class="lightbox-next" onclick="navigateLightbox(1)"><i class="fas fa-chevron-right"></i></button>
         <div class="lightbox-content">
             <img id="lightboxImage" src="" alt="Gallery Image">
+            <video id="lightboxVideo" controls style="display:none; width:100%; border-radius:8px;">
+                <source src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
             <div class="lightbox-description" id="lightboxDescription"></div>
         </div>
     </div>
@@ -167,18 +299,26 @@
                 <div class="card-head">
                     <div class="card-icon"><i class="fas fa-images"></i></div>
                     <div class="card-title">Photo Gallery</div>
+                    <!-- toggle button -->
+                    <div style="margin-left:auto;">
+                        <div id="mediaToggle" class="tooltip-container" onclick="toggleMedia()" role="button" tabindex="0" aria-pressed="false">
+                            <span class="text" id="toggleText">SHOW VIDEOS</span>
+                            <span class="tooltip">Switch to videos</span>
+                            <span aria-hidden="true"></span>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="gallery-grid">
-                    <!-- page 1 (0..7) -->
-                    <div class="gallery-item" onclick="openLightbox(0)"><img src="gallery1.jpg" alt="Campus life at UiTM" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Campus life at UiTM</div></div>
-                    <div class="gallery-item" onclick="openLightbox(1)"><img src="gallery2.jpg" alt="Working on projects" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-laptop-code"></i></div><div class="gallery-description">Working on projects</div></div>
-                    <div class="gallery-item" onclick="openLightbox(2)"><img src="gallery3.jpg" alt="Team collaborations" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-users"></i></div><div class="gallery-description">Team collaborations</div></div>
-                    <div class="gallery-item" onclick="openLightbox(3)"><img src="gallery4.jpg" alt="Events and activities" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-award"></i></div><div class="gallery-description">Events and activities</div></div>
-                    <div class="gallery-item" onclick="openLightbox(4)"><img src="gallery5.jpg" alt="Creative work showcase" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-palette"></i></div><div class="gallery-description">Creative work showcase</div></div>
-                    <div class="gallery-item" onclick="openLightbox(5)"><img src="gallery6.jpg" alt="Academic achievements" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-graduation-cap"></i></div><div class="gallery-description">Academic achievements</div></div>
-                    <div class="gallery-item" onclick="openLightbox(6)"><img src="gallery7.jpg" alt="Youth leadership camp" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-user-circle"></i></div><div class="gallery-description">Youth leadership camp</div></div>
-                    <div class="gallery-item" onclick="openLightbox(7)"><img src="gallery8.jpg" alt="Outdoor adventures" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-mountain"></i></div><div class="gallery-description">Outdoor adventures</div></div>
+                     <!-- page 1 (0..7) -->
+                     <div class="gallery-item" onclick="openLightbox(0)"><img src="gallery1.jpg" alt="Campus life at UiTM" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Campus life at UiTM</div></div>
+                     <div class="gallery-item" onclick="openLightbox(1)"><img src="gallery2.jpg" alt="Working on projects" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-laptop-code"></i></div><div class="gallery-description">Working on projects</div></div>
+                     <div class="gallery-item" onclick="openLightbox(2)"><img src="gallery3.jpg" alt="Team collaborations" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-users"></i></div><div class="gallery-description">Team collaborations</div></div>
+                     <div class="gallery-item" onclick="openLightbox(3)"><img src="gallery4.jpg" alt="Events and activities" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-award"></i></div><div class="gallery-description">Events and activities</div></div>
+                     <div class="gallery-item" onclick="openLightbox(4)"><img src="gallery5.jpg" alt="Creative work showcase" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-palette"></i></div><div class="gallery-description">Creative work showcase</div></div>
+                     <div class="gallery-item" onclick="openLightbox(5)"><img src="gallery6.jpg" alt="Academic achievements" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-graduation-cap"></i></div><div class="gallery-description">Academic achievements</div></div>
+                     <div class="gallery-item" onclick="openLightbox(6)"><img src="gallery7.jpg" alt="Youth leadership camp" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-user-circle"></i></div><div class="gallery-description">Youth leadership camp</div></div>
+                     <div class="gallery-item" onclick="openLightbox(7)"><img src="gallery8.jpg" alt="Outdoor adventures" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-mountain"></i></div><div class="gallery-description">Outdoor adventures</div></div>
 
                     <!-- page 2 (8..15) -->
                     <div class="gallery-item" onclick="openLightbox(8)"><img src="gallery9.jpg" alt="Gallery 9" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Gallery 9</div></div>
@@ -191,128 +331,233 @@
                     <div class="gallery-item" onclick="openLightbox(15)"><img src="gallery16.jpg" alt="Gallery 16" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Gallery 16</div></div>
                 </div>
 
+                <!-- video grid (hidden by default) -->
+                <div class="video-grid" id="videoGrid">
+                    <div class="gallery-item" onclick="openLightboxVideo(0)"><div class="video-thumb"><i class="fas fa-play"></i></div><div class="gallery-description">Video 1</div></div>
+                    <div class="gallery-item" onclick="openLightboxVideo(1)"><div class="video-thumb"><i class="fas fa-play"></i></div><div class="gallery-description">Video 2</div></div>
+                    <div class="gallery-item" onclick="openLightboxVideo(2)"><div class="video-thumb"><i class="fas fa-play"></i></div><div class="gallery-description">Video 3</div></div>
+                    <div class="gallery-item" onclick="openLightboxVideo(3)"><div class="video-thumb"><i class="fas fa-play"></i></div><div class="gallery-description">Video 4</div></div>
+                </div>
+
                 <!-- pagination controls -->
                 <div class="gallery-pagination" id="galleryPagination"></div>
-            </div>
-        </div>
-    </div>
- 
-    <script src="script.js"></script>
-    <script>
-        // Gallery lightbox functionality (extended to 16 images) + pagination (8 per page)
+             </div>
+         </div>
+     </div>
+  
+     <script src="script.js"></script>
+     <script>
+        // Gallery media lists
         const galleryImages = [
-            { src: 'gallery1.jpg', description: 'Campus life at UiTM' },
-            { src: 'gallery2.jpg', description: 'Working on projects' },
-            { src: 'gallery3.jpg', description: 'Team collaborations' },
-            { src: 'gallery4.jpg', description: 'Events and activities' },
-            { src: 'gallery5.jpg', description: 'Creative work showcase' },
-            { src: 'gallery6.jpg', description: 'Academic achievements' },
-            { src: 'gallery7.jpg', description: 'Youth leadership camp' },
-            { src: 'gallery8.jpg', description: 'Outdoor adventures' },
-            { src: 'gallery9.jpg', description: 'Gallery 9' },
-            { src: 'gallery10.jpg', description: 'Gallery 10' },
-            { src: 'gallery11.jpg', description: 'Gallery 11' },
-            { src: 'gallery12.jpg', description: 'Gallery 12' },
-            { src: 'gallery13.jpg', description: 'Gallery 13' },
-            { src: 'gallery14.jpg', description: 'Gallery 14' },
-            { src: 'gallery15.jpg', description: 'Gallery 15' },
-            { src: 'gallery16.jpg', description: 'Gallery 16' }
-        ];
-
-        let currentImageIndex = 0;
-        const itemsPerPage = 8;
-        const galleryItems = Array.from(document.querySelectorAll('.gallery-item'));
-        const paginationContainer = document.getElementById('galleryPagination');
-        const totalPages = Math.ceil(galleryItems.length / itemsPerPage);
-
-        function openLightbox(index) {
-            currentImageIndex = index;
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImage = document.getElementById('lightboxImage');
-            const lightboxDescription = document.getElementById('lightboxDescription');
-            lightboxImage.src = galleryImages[index].src;
-            lightboxDescription.textContent = galleryImages[index].description;
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeLightbox() {
-            const lightbox = document.getElementById('lightbox');
-            lightbox.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        function navigateLightbox(direction) {
-            currentImageIndex += direction;
-            if (currentImageIndex < 0) currentImageIndex = galleryImages.length - 1;
-            if (currentImageIndex >= galleryImages.length) currentImageIndex = 0;
-            const lightboxImage = document.getElementById('lightboxImage');
-            const lightboxDescription = document.getElementById('lightboxDescription');
-            lightboxImage.src = galleryImages[currentImageIndex].src;
-            lightboxDescription.textContent = galleryImages[currentImageIndex].description;
-        }
-
-        // pagination
-        let currentPage = 1;
-        function renderPagination() {
-            paginationContainer.innerHTML = '';
-            const prev = document.createElement('button');
-            prev.textContent = 'Prev';
-            prev.className = 'control-btn';
-            prev.addEventListener('click', () => showPage(currentPage - 1));
-            paginationContainer.appendChild(prev);
-
-            for (let p = 1; p <= totalPages; p++) {
-                const btn = document.createElement('button');
-                btn.textContent = p;
-                btn.className = 'control-btn page-btn' + (p === currentPage ? ' active' : '');
-                btn.setAttribute('aria-label', 'Page ' + p);
-                btn.addEventListener('click', () => showPage(p));
-                paginationContainer.appendChild(btn);
+             { src: 'gallery1.jpg', description: 'Campus life at UiTM' },
+             { src: 'gallery2.jpg', description: 'Working on projects' },
+             { src: 'gallery3.jpg', description: 'Team collaborations' },
+             { src: 'gallery4.jpg', description: 'Events and activities' },
+             { src: 'gallery5.jpg', description: 'Creative work showcase' },
+             { src: 'gallery6.jpg', description: 'Academic achievements' },
+             { src: 'gallery7.jpg', description: 'Youth leadership camp' },
+             { src: 'gallery8.jpg', description: 'Outdoor adventures' },
+             { src: 'gallery9.jpg', description: 'Gallery 9' },
+             { src: 'gallery10.jpg', description: 'Gallery 10' },
+             { src: 'gallery11.jpg', description: 'Gallery 11' },
+             { src: 'gallery12.jpg', description: 'Gallery 12' },
+             { src: 'gallery13.jpg', description: 'Gallery 13' },
+             { src: 'gallery14.jpg', description: 'Gallery 14' },
+             { src: 'gallery15.jpg', description: 'Gallery 15' },
+             { src: 'gallery16.jpg', description: 'Gallery 16' }
+         ];
+ 
+         const galleryVideos = [
+             { src: 'video1.mp4', description: 'Video 1' },
+             { src: 'video2.mp4', description: 'Video 2' },
+             { src: 'video3.mp4', description: 'Video 3' },
+             { src: 'video4.mp4', description: 'Video 4' }
+         ];
+ 
+         let currentImageIndex = 0;
+         const itemsPerPage = 8;
+         const galleryItems = Array.from(document.querySelectorAll('.gallery-grid .gallery-item')); // images only
+         const paginationContainer = document.getElementById('galleryPagination');
+         const totalPages = Math.ceil(galleryItems.length / itemsPerPage);
+         let currentMediaType = 'image'; // 'image' or 'video'
+ 
+         function openLightbox(index) { // keep for existing onclicks (images)
+             openLightboxImage(index);
+         }
+         function openLightboxImage(index) {
+             currentMediaType = 'image';
+             currentImageIndex = index;
+             const lightbox = document.getElementById('lightbox');
+             const img = document.getElementById('lightboxImage');
+             const vid = document.getElementById('lightboxVideo');
+             const desc = document.getElementById('lightboxDescription');
+             vid.style.display = 'none';
+             vid.pause();
+             img.style.display = 'block';
+             img.src = galleryImages[index].src;
+             desc.textContent = galleryImages[index].description;
+             lightbox.classList.add('active');
+             document.body.style.overflow = 'hidden';
+         }
+         function openLightboxVideo(index) {
+             currentMediaType = 'video';
+             currentImageIndex = index;
+             const lightbox = document.getElementById('lightbox');
+             const img = document.getElementById('lightboxImage');
+             const vid = document.getElementById('lightboxVideo');
+             const desc = document.getElementById('lightboxDescription');
+             img.style.display = 'none';
+             vid.style.display = 'block';
+             vid.src = galleryVideos[index].src;
+             vid.currentTime = 0;
+             vid.play().catch(()=>{});
+             desc.textContent = galleryVideos[index].description;
+             lightbox.classList.add('active');
+             document.body.style.overflow = 'hidden';
+         }
+ 
+         function closeLightbox() {
+             const lightbox = document.getElementById('lightbox');
+             lightbox.classList.remove('active');
+             document.body.style.overflow = '';
+            // stop video if open
+            const vid = document.getElementById('lightboxVideo');
+            if (vid) { vid.pause(); vid.src=''; vid.style.display='none'; }
+         }
+ 
+         function navigateLightbox(direction) {
+            if (currentMediaType === 'image') {
+                currentImageIndex += direction;
+                if (currentImageIndex < 0) currentImageIndex = galleryImages.length - 1;
+                if (currentImageIndex >= galleryImages.length) currentImageIndex = 0;
+                const img = document.getElementById('lightboxImage');
+                const desc = document.getElementById('lightboxDescription');
+                img.src = galleryImages[currentImageIndex].src;
+                desc.textContent = galleryImages[currentImageIndex].description;
+            } else {
+                currentImageIndex += direction;
+                if (currentImageIndex < 0) currentImageIndex = galleryVideos.length - 1;
+                if (currentImageIndex >= galleryVideos.length) currentImageIndex = 0;
+                const vid = document.getElementById('lightboxVideo');
+                const desc = document.getElementById('lightboxDescription');
+                vid.pause();
+                vid.src = galleryVideos[currentImageIndex].src;
+                vid.currentTime = 0;
+                vid.play().catch(()=>{});
+                desc.textContent = galleryVideos[currentImageIndex].description;
             }
-
-            const next = document.createElement('button');
-            next.textContent = 'Next';
-            next.className = 'control-btn';
-            next.addEventListener('click', () => showPage(currentPage + 1));
-            paginationContainer.appendChild(next);
-
-            updatePaginationState();
-        }
-        function updatePaginationState() {
-            Array.from(paginationContainer.querySelectorAll('.page-btn')).forEach((b, i) => {
-                b.classList.toggle('active', i + 1 === currentPage);
-                b.setAttribute('aria-current', (i + 1 === currentPage) ? 'page' : 'false');
-            });
-            // enable/disable prev/next for nicer UX (wrap allowed by showPage logic, but these controls show disabled state)
+         }
+ 
+         // pagination
+         let currentPage = 1;
+         function renderPagination() {
+             paginationContainer.innerHTML = '';
+             const prev = document.createElement('button');
+             prev.textContent = 'Prev';
+             prev.className = 'control-btn';
+             prev.addEventListener('click', () => showPage(currentPage - 1));
+             paginationContainer.appendChild(prev);
+ 
+             for (let p = 1; p <= totalPages; p++) {
+                 const btn = document.createElement('button');
+                 btn.textContent = p;
+                 btn.className = 'control-btn page-btn' + (p === currentPage ? ' active' : '');
+                 btn.setAttribute('aria-label', 'Page ' + p);
+                 btn.addEventListener('click', () => showPage(p));
+                 paginationContainer.appendChild(btn);
+             }
+ 
+             const next = document.createElement('button');
+             next.textContent = 'Next';
+             next.className = 'control-btn';
+             next.addEventListener('click', () => showPage(currentPage + 1));
+             paginationContainer.appendChild(next);
+ 
+             updatePaginationState();
+         }
+         function updatePaginationState() {
+             Array.from(paginationContainer.querySelectorAll('.page-btn')).forEach((b, i) => {
+                 b.classList.toggle('active', i + 1 === currentPage);
+                 b.setAttribute('aria-current', (i + 1 === currentPage) ? 'page' : 'false');
+             });
+             // enable/disable prev/next for nicer UX (wrap allowed by showPage logic, but these controls show disabled state)
             const [prevBtn, , , nextBtn] = Array.from(paginationContainer.querySelectorAll('.control-btn'));
-            if (prevBtn) prevBtn.disabled = totalPages <= 1;
-            if (nextBtn) nextBtn.disabled = totalPages <= 1;
+             if (prevBtn) prevBtn.disabled = totalPages <= 1;
+             if (nextBtn) nextBtn.disabled = totalPages <= 1;
+         }
+         function showPage(page) {
+             if (page < 1) page = totalPages;
+             if (page > totalPages) page = 1;
+             currentPage = page;
+             const start = (currentPage - 1) * itemsPerPage;
+             const end = start + itemsPerPage;
+             galleryItems.forEach((it, idx) => {
+                 it.style.display = (idx >= start && idx < end) ? '' : 'none';
+             });
+             renderPagination();
+         }
+ 
+        // toggle between images and videos
+        function toggleMedia() {
+            const grid = document.querySelector('.gallery-grid');
+            const vgrid = document.getElementById('videoGrid');
+            const pag = document.getElementById('galleryPagination');
+            const btn = document.getElementById('mediaToggle');
+            const txt = document.getElementById('toggleText');
+            const tip = document.querySelector('#mediaToggle .tooltip');
+            const cardTitleEl = btn && btn.closest('.card') ? btn.closest('.card').querySelector('.card-title') : null;
+            const vShown = window.getComputedStyle(vgrid).display !== 'none';
+            if (vShown) {
+                vgrid.style.display = 'none';
+                grid.style.display = '';
+                pag.style.display = '';
+                btn.classList.remove('toggle-active');
+                txt.textContent = 'SHOW VIDEOS';
+                if (tip) tip.textContent = 'Switch to videos';
+                if (cardTitleEl) cardTitleEl.textContent = 'Photo Gallery';
+                btn.setAttribute('aria-pressed','false');
+                currentMediaType = 'image';
+            } else {
+                vgrid.style.display = 'flex';
+                grid.style.display = 'none';
+                pag.style.display = 'none';
+                btn.classList.add('toggle-active');
+                txt.textContent = 'SHOW PICTURES';
+                if (tip) tip.textContent = 'Switch to pictures';
+                if (cardTitleEl) cardTitleEl.textContent = 'Video Gallery';
+                btn.setAttribute('aria-pressed','true');
+                currentMediaType = 'video';
+            }
         }
-        function showPage(page) {
-            if (page < 1) page = totalPages;
-            if (page > totalPages) page = 1;
-            currentPage = page;
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            galleryItems.forEach((it, idx) => {
-                it.style.display = (idx >= start && idx < end) ? '' : 'none';
-            });
-            renderPagination();
-        }
-
-        // Close lightbox on Escape / arrows
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowLeft') navigateLightbox(-1);
-            if (e.key === 'ArrowRight') navigateLightbox(1);
-        });
-        document.getElementById('lightbox').addEventListener('click', function(e) {
-            if (e.target === this) closeLightbox();
-        });
-
-        // init
-        showPage(1);
-    </script>
-</body>
-</html>
+ 
+         // keyboard accessibility for toggle (Enter / Space)
+         (function(){
+             const btn = document.getElementById('mediaToggle');
+             if (btn) {
+                 btn.addEventListener('keydown', function(e){
+                     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMedia(); }
+                 });
+                // initialize tooltip text and header to match initial state
+                const tip = document.querySelector('#mediaToggle .tooltip');
+                if (tip) tip.textContent = 'Switch to videos';
+                const cardTitleEl = btn.closest('.card') ? btn.closest('.card').querySelector('.card-title') : null;
+                if (cardTitleEl) cardTitleEl.textContent = 'Photo Gallery';
+             }
+         })();
+ 
+         // Close lightbox on Escape / arrows
+         document.addEventListener('keydown', function(e) {
+             if (e.key === 'Escape') closeLightbox();
+             if (e.key === 'ArrowLeft') navigateLightbox(-1);
+             if (e.key === 'ArrowRight') navigateLightbox(1);
+         });
+         document.getElementById('lightbox').addEventListener('click', function(e) {
+             if (e.target === this) closeLightbox();
+         });
+ 
+         // init
+         showPage(1);
+         renderPagination();
+     </script>
+ </body>
+ </html>
