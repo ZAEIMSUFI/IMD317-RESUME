@@ -169,6 +169,33 @@
             }
         }
 
+        /* Improved spacing for profile sidebar (info + social links) */
+        .profile-header .profile-name { margin-top: 8px; margin-bottom: 4px; letter-spacing: 0.2px; }
+        .profile-header .profile-role { margin-bottom: 6px; }
+
+        .info-section { margin-bottom: 20px; }
+        .info-item {
+            gap: 16px;              /* more space between icon and text */
+            padding: 8px 0;         /* vertical breathing room per row */
+            align-items: center;    /* align icon/text nicely */
+        }
+        .info-label { font-weight: 600; margin-bottom: 4px; }
+        .info-value { line-height: 1.65; font-size: 15px; color: var(--text-secondary); }
+
+        .social-grid { gap: 12px; }
+        .social-grid a.social-btn {
+            padding: 8px 10px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+        }
+        @media (max-width: 900px) {
+            .info-item { padding: 10px 0; }
+            .info-value { font-size: 15px; }
+        }
+
         /* Responsive Layout */
         @media (max-width: 900px) {
             .content-area { grid-template-columns: 1fr; } /* single column on tablets/phones */
