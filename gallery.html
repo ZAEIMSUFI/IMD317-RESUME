@@ -6,6 +6,41 @@
     <title>Gallery - Muhammad Zaeim Sufi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* gallery pagination - match control button visual style */
+        .gallery-pagination {
+            display:flex;
+            gap:8px;
+            justify-content:center;
+            align-items:center;
+            margin-top:16px;
+        }
+        .gallery-pagination .control-btn {
+            background: transparent;
+            color: var(--text, #fff);
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 160ms ease, transform 120ms ease;
+            font-weight: 600;
+        }
+        .gallery-pagination .control-btn:hover {
+            background: rgba(255,255,255,0.04);
+            transform: translateY(-1px);
+        }
+        .gallery-pagination .page-btn.active {
+            background: var(--accent, #4f46e5);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 6px 18px rgba(79,70,229,0.18);
+        }
+        .gallery-pagination .control-btn[disabled] {
+            opacity: 0.5;
+            cursor: default;
+            transform: none;
+        }
+    </style>
 </head>
 <body class="font-modern">
     <!-- Lightbox -->
@@ -135,61 +170,36 @@
                 </div>
                 
                 <div class="gallery-grid">
-                    <div class="gallery-item" onclick="openLightbox(0)">
-                        <img src="gallery1.jpg" alt="Campus life at UiTM" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div>
-                        <div class="gallery-description">Campus life at UiTM</div>
-                    </div>
+                    <!-- page 1 (0..7) -->
+                    <div class="gallery-item" onclick="openLightbox(0)"><img src="gallery1.jpg" alt="Campus life at UiTM" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Campus life at UiTM</div></div>
+                    <div class="gallery-item" onclick="openLightbox(1)"><img src="gallery2.jpg" alt="Working on projects" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-laptop-code"></i></div><div class="gallery-description">Working on projects</div></div>
+                    <div class="gallery-item" onclick="openLightbox(2)"><img src="gallery3.jpg" alt="Team collaborations" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-users"></i></div><div class="gallery-description">Team collaborations</div></div>
+                    <div class="gallery-item" onclick="openLightbox(3)"><img src="gallery4.jpg" alt="Events and activities" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-award"></i></div><div class="gallery-description">Events and activities</div></div>
+                    <div class="gallery-item" onclick="openLightbox(4)"><img src="gallery5.jpg" alt="Creative work showcase" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-palette"></i></div><div class="gallery-description">Creative work showcase</div></div>
+                    <div class="gallery-item" onclick="openLightbox(5)"><img src="gallery6.jpg" alt="Academic achievements" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-graduation-cap"></i></div><div class="gallery-description">Academic achievements</div></div>
+                    <div class="gallery-item" onclick="openLightbox(6)"><img src="gallery7.jpg" alt="Youth leadership camp" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-user-circle"></i></div><div class="gallery-description">Youth leadership camp</div></div>
+                    <div class="gallery-item" onclick="openLightbox(7)"><img src="gallery8.jpg" alt="Outdoor adventures" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-mountain"></i></div><div class="gallery-description">Outdoor adventures</div></div>
 
-                    <div class="gallery-item" onclick="openLightbox(1)">
-                        <img src="gallery2.jpg" alt="Working on projects" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="gallery-placeholder" style="display:none;"><i class="fas fa-laptop-code"></i></div>
-                        <div class="gallery-description">Working on projects</div>
-                    </div>
-
-                    <div class="gallery-item" onclick="openLightbox(2)">
-                        <img src="gallery3.jpg" alt="Team collaborations" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="gallery-placeholder" style="display:none;"><i class="fas fa-users"></i></div>
-                        <div class="gallery-description">Team collaborations</div>
-                    </div>
-
-                    <div class="gallery-item" onclick="openLightbox(3)">
-                        <img src="gallery4.jpg" alt="Events and activities" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="gallery-placeholder" style="display:none;"><i class="fas fa-award"></i></div>
-                        <div class="gallery-description">Events and activities</div>
-                    </div>
-
-                    <div class="gallery-item" onclick="openLightbox(4)">
-                        <img src="gallery5.jpg" alt="Creative work showcase" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="gallery-placeholder" style="display:none;"><i class="fas fa-palette"></i></div>
-                        <div class="gallery-description">Creative work showcase</div>
-                    </div>
-
-                    <div class="gallery-item" onclick="openLightbox(5)">
-                        <img src="gallery6.jpg" alt="Academic achievements" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="gallery-placeholder" style="display:none;"><i class="fas fa-graduation-cap"></i></div>
-                        <div class="gallery-description">Academic achievements</div>
-                    </div>
-
-                    <div class="gallery-item" onclick="openLightbox(6)">
-                        <img src="gallery7.jpg" alt="Youth leadership camp" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="gallery-placeholder" style="display:none;"><i class="fas fa-user-circle"></i></div>
-                        <div class="gallery-description">Youth leadership camp</div>
-                    </div>
-
-                    <div class="gallery-item" onclick="openLightbox(7)">
-                        <img src="gallery8.jpg" alt="Outdoor adventures" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="gallery-placeholder" style="display:none;"><i class="fas fa-mountain"></i></div>
-                        <div class="gallery-description">Outdoor adventures</div>
-                    </div>
+                    <!-- page 2 (8..15) -->
+                    <div class="gallery-item" onclick="openLightbox(8)"><img src="gallery9.jpg" alt="Gallery 9" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Gallery 9</div></div>
+                    <div class="gallery-item" onclick="openLightbox(9)"><img src="gallery10.jpg" alt="Gallery 10" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Gallery 10</div></div>
+                    <div class="gallery-item" onclick="openLightbox(10)"><img src="gallery11.jpg" alt="Gallery 11" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Gallery 11</div></div>
+                    <div class="gallery-item" onclick="openLightbox(11)"><img src="gallery12.jpg" alt="Gallery 12" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Gallery 12</div></div>
+                    <div class="gallery-item" onclick="openLightbox(12)"><img src="gallery13.jpg" alt="Gallery 13" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Gallery 13</div></div>
+                    <div class="gallery-item" onclick="openLightbox(13)"><img src="gallery14.jpg" alt="Gallery 14" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Gallery 14</div></div>
+                    <div class="gallery-item" onclick="openLightbox(14)"><img src="gallery15.jpg" alt="Gallery 15" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Gallery 15</div></div>
+                    <div class="gallery-item" onclick="openLightbox(15)"><img src="gallery16.jpg" alt="Gallery 16" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="gallery-placeholder" style="display:none;"><i class="fas fa-camera"></i></div><div class="gallery-description">Gallery 16</div></div>
                 </div>
+
+                <!-- pagination controls -->
+                <div class="gallery-pagination" id="galleryPagination"></div>
             </div>
         </div>
     </div>
-
+ 
     <script src="script.js"></script>
     <script>
-        // Gallery lightbox functionality
+        // Gallery lightbox functionality (extended to 16 images) + pagination (8 per page)
         const galleryImages = [
             { src: 'gallery1.jpg', description: 'Campus life at UiTM' },
             { src: 'gallery2.jpg', description: 'Working on projects' },
@@ -198,17 +208,28 @@
             { src: 'gallery5.jpg', description: 'Creative work showcase' },
             { src: 'gallery6.jpg', description: 'Academic achievements' },
             { src: 'gallery7.jpg', description: 'Youth leadership camp' },
-            { src: 'gallery8.jpg', description: 'Outdoor adventures' }
+            { src: 'gallery8.jpg', description: 'Outdoor adventures' },
+            { src: 'gallery9.jpg', description: 'Gallery 9' },
+            { src: 'gallery10.jpg', description: 'Gallery 10' },
+            { src: 'gallery11.jpg', description: 'Gallery 11' },
+            { src: 'gallery12.jpg', description: 'Gallery 12' },
+            { src: 'gallery13.jpg', description: 'Gallery 13' },
+            { src: 'gallery14.jpg', description: 'Gallery 14' },
+            { src: 'gallery15.jpg', description: 'Gallery 15' },
+            { src: 'gallery16.jpg', description: 'Gallery 16' }
         ];
 
         let currentImageIndex = 0;
+        const itemsPerPage = 8;
+        const galleryItems = Array.from(document.querySelectorAll('.gallery-item'));
+        const paginationContainer = document.getElementById('galleryPagination');
+        const totalPages = Math.ceil(galleryItems.length / itemsPerPage);
 
         function openLightbox(index) {
             currentImageIndex = index;
             const lightbox = document.getElementById('lightbox');
             const lightboxImage = document.getElementById('lightboxImage');
             const lightboxDescription = document.getElementById('lightboxDescription');
-            
             lightboxImage.src = galleryImages[index].src;
             lightboxDescription.textContent = galleryImages[index].description;
             lightbox.classList.add('active');
@@ -225,24 +246,73 @@
             currentImageIndex += direction;
             if (currentImageIndex < 0) currentImageIndex = galleryImages.length - 1;
             if (currentImageIndex >= galleryImages.length) currentImageIndex = 0;
-            
             const lightboxImage = document.getElementById('lightboxImage');
             const lightboxDescription = document.getElementById('lightboxDescription');
             lightboxImage.src = galleryImages[currentImageIndex].src;
             lightboxDescription.textContent = galleryImages[currentImageIndex].description;
         }
 
-        // Close lightbox on Escape key
+        // pagination
+        let currentPage = 1;
+        function renderPagination() {
+            paginationContainer.innerHTML = '';
+            const prev = document.createElement('button');
+            prev.textContent = 'Prev';
+            prev.className = 'control-btn';
+            prev.addEventListener('click', () => showPage(currentPage - 1));
+            paginationContainer.appendChild(prev);
+
+            for (let p = 1; p <= totalPages; p++) {
+                const btn = document.createElement('button');
+                btn.textContent = p;
+                btn.className = 'control-btn page-btn' + (p === currentPage ? ' active' : '');
+                btn.setAttribute('aria-label', 'Page ' + p);
+                btn.addEventListener('click', () => showPage(p));
+                paginationContainer.appendChild(btn);
+            }
+
+            const next = document.createElement('button');
+            next.textContent = 'Next';
+            next.className = 'control-btn';
+            next.addEventListener('click', () => showPage(currentPage + 1));
+            paginationContainer.appendChild(next);
+
+            updatePaginationState();
+        }
+        function updatePaginationState() {
+            Array.from(paginationContainer.querySelectorAll('.page-btn')).forEach((b, i) => {
+                b.classList.toggle('active', i + 1 === currentPage);
+                b.setAttribute('aria-current', (i + 1 === currentPage) ? 'page' : 'false');
+            });
+            // enable/disable prev/next for nicer UX (wrap allowed by showPage logic, but these controls show disabled state)
+            const [prevBtn, , , nextBtn] = Array.from(paginationContainer.querySelectorAll('.control-btn'));
+            if (prevBtn) prevBtn.disabled = totalPages <= 1;
+            if (nextBtn) nextBtn.disabled = totalPages <= 1;
+        }
+        function showPage(page) {
+            if (page < 1) page = totalPages;
+            if (page > totalPages) page = 1;
+            currentPage = page;
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            galleryItems.forEach((it, idx) => {
+                it.style.display = (idx >= start && idx < end) ? '' : 'none';
+            });
+            renderPagination();
+        }
+
+        // Close lightbox on Escape / arrows
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeLightbox();
             if (e.key === 'ArrowLeft') navigateLightbox(-1);
             if (e.key === 'ArrowRight') navigateLightbox(1);
         });
-
-        // Close lightbox when clicking outside image
         document.getElementById('lightbox').addEventListener('click', function(e) {
             if (e.target === this) closeLightbox();
         });
+
+        // init
+        showPage(1);
     </script>
 </body>
 </html>
