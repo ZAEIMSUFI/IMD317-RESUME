@@ -18,6 +18,91 @@
             filter: none !important;
             opacity: 1 !important;
         }
+
+        /* Timeline image slots (clean card-like thumbnails) */
+        .timeline-images {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        .timeline-image {
+            width: calc(33.333% - 10px);
+            max-width: 180px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.03);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        }
+        .timeline-image img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+        .timeline-image .caption {
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 8px;
+        }
+        @media (max-width:820px) {
+            .timeline-image { width: calc(50% - 10px); max-width: none; }
+        }
+        @media (max-width:480px) {
+            .timeline-image { width: 100%; }
+        }
+
+        /* Image modal (expander) */
+        .img-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.75);
+            z-index: 9999;
+            padding: 20px;
+        }
+        .img-modal.open { display: flex; }
+        .img-modal .modal-card {
+            max-width: 1100px;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--bg-card);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .img-modal .modal-img {
+            width: 100%;
+            height: min(80vh, 720px);
+            object-fit: contain;
+            background: #111;
+            display: block;
+        }
+        .img-modal .modal-footer {
+            padding: 12px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .img-modal .modal-caption { color: var(--text-secondary); font-size: 14px; }
+        .img-modal .modal-close {
+            background: transparent;
+            border: 0;
+            color: var(--text);
+            font-size: 18px;
+            cursor: pointer;
+        }
+        @media (max-width:600px) {
+            .img-modal .modal-footer { padding: 10px; }
+            .img-modal .modal-caption { font-size: 13px; }
+        }
     </style>
 </head>
 <body class="font-modern">
@@ -44,53 +129,76 @@
                     <div class="card-title">Professional Experience</div>
                 </div>
                 
-                <!-- Head of Multimedia Position -->
+                <!-- Youth Leadership Programme — Head of Multimedia -->
                 <div class="timeline-item">
                     <span class="timeline-date">December 2024</span>
                     <div class="timeline-title">Head of Multimedia</div>
-                    <div class="timeline-subtitle">Sekretariat Rakan Muda (SRM UiTMJ) - Gunung Pulai</div>
+                    <div class="timeline-subtitle">Universiti Teknologi MARA (UiTM) – Sekretariat Rakan Muda UiTMJ, Johor</div>
                     <p class="timeline-text">
-                        Led comprehensive multimedia operations for the Youth Leadership Programme "Kem Pemantapan" at Gunung Pulai, a 3-day 2-night intensive leadership camp. Managed all aspects of visual communications and digital content creation:
+                        Led the multimedia team in managing all visual and digital content for the Youth Leadership Programme.
                     </p>
                     <ul class="timeline-text">
-                        <li>Designed and produced complete visual identity including posters, banners, programme shirts, and promotional materials</li>
-                        <li>Created engaging template stories and presentation slides for camp activities and sessions</li>
-                        <li>Served as primary photographer and videographer, capturing key moments and programme highlights</li>
-                        <li>Produced professional montage video showcasing camp experiences and participant achievements</li>
-                        <li>Coordinated with camp organizers to ensure all multimedia deliverables aligned with programme objectives and timeline</li>
+                        <li>Led the multimedia team in managing all visual and digital content for the Youth Leadership Programme.</li>
+                        <li>Designed and produced key promotional materials including banners, posters, and programme shirts to enhance branding and participant experience.</li>
+                        <li>Created montage videos to capture and showcase the programme’s highlights and achievements.</li>
+                        <li>Coordinated with event organizers and other departments to ensure multimedia assets aligned with the programme’s objectives and branding guidelines.</li>
+                        <li>Ensured timely delivery of high-quality creative content that boosted participant engagement and programme visibility.</li>
                     </ul>
+
+                    <!-- Image slot: replace src with your images -->
+                    <div class="timeline-images">
+                        <div class="timeline-image"><img src="images/youth-01.jpg" alt="Youth Leadership - banner" onclick="openImage(this.src, 'Banner / Promo')"><div class="caption">Banner / Promo</div></div>
+                        <div class="timeline-image"><img src="images/youth-02.jpg" alt="Youth Leadership - montage still" onclick="openImage(this.src, 'Montage still')"><div class="caption">Montage still</div></div>
+                        <div class="timeline-image"><img src="images/youth-03.jpg" alt="Youth Leadership - team" onclick="openImage(this.src, 'Team')"><div class="caption">Team</div></div>
+                    </div>
                 </div>
-                
-                <!-- Internship Position -->
+
+                <!-- Internship Trainee - IKBN Bandar Penawar -->
                 <div class="timeline-item">
-                    <span class="timeline-date">28 July - 19 September 2024</span>
-                    <div class="timeline-title">Pegawai Pentadbiran (Administrative Officer)</div>
-                    <div class="timeline-subtitle">Institut Kemahiran Belia Negara (IKBN) - Internship</div>
+                    <span class="timeline-date">28 July 2025 – 19 September 2025</span>
+                    <div class="timeline-title">Pegawai Pentadbiran (Administrative Officer) — Internship Trainee</div>
+                    <div class="timeline-subtitle">Institut Kemahiran Belia Negara (IKBN) Bandar Penawar</div>
                     <p class="timeline-text">
-                        Completed a comprehensive internship focused on IT support, infrastructure management, and library system development:
+                        Developed and maintained the IKBN Library System and supported administrative and technical operations during the internship period.
                     </p>
                     <ul class="timeline-text">
-                        <li>Performed PC maintenance and troubleshooting to ensure optimal system performance and minimize downtime</li>
-                        <li>Executed network infrastructure tasks including cutting, assembling, and organizing cabling systems for improved connectivity</li>
-                        <li>Developed and implemented a library management system for IKBN library, streamlining book cataloging and lending processes</li>
-                        <li>Provided technical support for administrative operations and assisted with various IT-related projects</li>
+                        <li>Developed and maintained the IKBN Library System including database configuration, hosting migration, and interface improvement.</li>
+                        <li>Classified and imported more than 800 library materials into the digital system using the Dewey Decimal Classification.</li>
+                        <li>Produced the IKBN digital bulletin “Pena Penawar” and prepared design drafts for supervisor and director review.</li>
+                        <li>Assisted with administrative and technical duties such as device setup, Google Meet preparation, and library material organization.</li>
+                        <li>Developed an AI-based photography analysis system and website for the Innovation Program using Claude AI.</li>
+                        <li>Captured event photography and videography for official IKBN programmes including the Independence Day marching event.</li>
                     </ul>
+
+                    <!-- Image slot: replace src with your internship photos -->
+                    <div class="timeline-images">
+                        <div class="timeline-image"><img src="images/ikbn-01.jpg" alt="IKBN - system dashboard" onclick="openImage(this.src, 'Library System')"><div class="caption">Library System</div></div>
+                        <div class="timeline-image"><img src="images/ikbn-02.jpg" alt="IKBN - digitized materials" onclick="openImage(this.src, 'Digitized materials')"><div class="caption">Digitized materials</div></div>
+                        <div class="timeline-image"><img src="images/ikbn-03.jpg" alt="IKBN - event photography" onclick="openImage(this.src, 'Event photo')"><div class="caption">Event photo</div></div>
+                    </div>
                 </div>
-                
-                <!-- Freelance Graphic Designer Position -->
+
+                <!-- Open Championship Chess Event -->
                 <div class="timeline-item">
-                    <span class="timeline-date">May 2023 - December 2023</span>
-                    <div class="timeline-title">Freelance Graphic Designer</div>
-                    <div class="timeline-subtitle">Sneaker on Street (SNK) - Local Malaysian Brand</div>
-                    <p class="timeline-text">
-                        Designed original graphics for SNK's "Jupiter Love" shirt and custom sneaker designs, supporting the brand's launch of a fresh streetwear collection. Responsibilities included:
-                    </p>
-                    <ul class="timeline-text">
-                        <li>Utilized Krita and Inkscape to create high-quality digital illustrations and vector artwork aligned with brand vision</li>
-                        <li>Collaborated closely with the client to understand design goals and deliver tailored visual solutions</li>
-                        <li>Successfully delivered designs according to specifications, focusing on creative execution</li>
-                        <li>Managed project timelines effectively to ensure timely delivery of all creative assets</li>
-                    </ul>
+                    <span class="timeline-date">December 2025</span>
+                    <div class="timeline-title">Event Crew • Backstage Manager • Multimedia Handler • Jury Assistant</div>
+                    <div class="timeline-subtitle">Open Championship Chess Event — Universiti Teknologi MARA (UiTM) – Sekretariat Rakan Muda, JSP UiTM, Unit Sukan UiTM, &amp; Segamat Chess Association</div>
+                     <ul class="timeline-text">
+                         <li>Managed backstage operations including player flow, table setup, tournament sequencing, and overall coordination across all 7 rounds.</li>
+                         <li>Handled multimedia duties by capturing photography, videography, and visual assets used for promotion and official event updates.</li>
+                         <li>Served as Jury Assistant, responsible for accurately keying in and verifying all 7 rounds of match results into the official chess system.</li>
+                         <li>Updated the official tournament website with match pairings, player points, rankings, and tiebreak outcomes while maintaining strict data accuracy.</li>
+                         <li>Managed contestant profiles and score validations using system manager tools to ensure final results were error-free before release.</li>
+                         <li>Collaborated with Sekretariat Rakan Muda, JSP, Unit Sukan UiTM, and Segamat Chess Association on logistics, technical coordination, and event execution.</li>
+                         <li>Provided direct support to participants, guiding them on schedules, scoring updates, and competition procedures.</li>
+                     </ul>
+
+                    <!-- Image slot: replace src with your event photos -->
+                    <div class="timeline-images">
+                        <div class="timeline-image"><img src="images/chess-01.jpg" alt="Chess event - stage" onclick="openImage(this.src, 'Stage / Setup')"><div class="caption">Stage / Setup</div></div>
+                        <div class="timeline-image"><img src="images/chess-02.jpg" alt="Chess event - match" onclick="openImage(this.src, 'Match')"><div class="caption">Match</div></div>
+                        <div class="timeline-image"><img src="images/chess-03.jpg" alt="Chess event - results" onclick="openImage(this.src, 'Results entry')"><div class="caption">Results entry</div></div>
+                     </div>
                 </div>
             </div>
 
@@ -218,6 +326,39 @@
     <!-- Footer -->
     <div class="footer">© 2025 Muhammad Zaeim Sufi Bin Jamaludin. All Rights Reserved.</div>
 
+    <!-- Image modal (used by timeline images) -->
+    <div id="imageModal" class="img-modal" onclick="if(event.target===this) closeImage()">
+        <div class="modal-card" role="dialog" aria-modal="true">
+            <img id="modalImg" class="modal-img" src="" alt="">
+            <div class="modal-footer">
+                <div class="modal-caption" id="modalCaption"></div>
+                <button class="modal-close" aria-label="Close" onclick="closeImage()">&times;</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    <script>
+        function openImage(src, caption) {
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('modalImg');
+            const cap = document.getElementById('modalCaption');
+            img.src = src;
+            img.alt = caption || '';
+            cap.textContent = caption || '';
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeImage() {
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('modalImg');
+            modal.classList.remove('open');
+            img.src = '';
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', function(e){
+            if(e.key === 'Escape') closeImage();
+        });
+    </script>
 </body>
 </html>
