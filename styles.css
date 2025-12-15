@@ -367,6 +367,14 @@ a {
   cursor: pointer;
 }
 
+/* Ensure the large weather icon matches across pages (index & experience) */
+.weather-icon,
+.weather-widget-floating .card .weather-icon,
+.control-dropdown .card .weather-icon {
+    font-size: 44px;
+    color: var(--accent);
+}
+
 .weather-widget-floating .city,
 .control-dropdown .city {
   font-weight: 700;
