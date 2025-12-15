@@ -385,6 +385,39 @@
             text-justify: inter-word;
             margin-top: 6px; /* small gap between heading and description */
         }
+
+        /* Hover address popup (adapted from Uiverse example) */
+        #addrApp { position: relative; display: inline-block; }
+        #addrApp .reference { position: absolute; top: -110px; left: 12px; z-index: 40; pointer-events: none; }
+        #addrApp .reference .card {
+            transition: transform 0.3s cubic-bezier(0.74, -0.03, 0.05, 1.24);
+            width: 220px;
+            height: 110px;
+            transform-origin: 50% 100%;
+            transform: scale(0);
+            filter: blur(6px);
+            background: linear-gradient(180deg,#ffffff,#f7f7f7);
+            border-radius: 14px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            padding: 8px;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        /* show on hover — using both :has (modern) and sibling selector fallback */
+        #addrApp:has(.hover-card:hover) > .reference > .card,
+        #addrApp .hover-card:hover + .reference .card {
+            transform: scale(1);
+            filter: blur(0);
+            pointer-events: auto;
+        }
+        #addrApp .bg-map { position:absolute; inset:0; background-position:center; background-size:cover; opacity:.12; z-index:0; }
+        #addrApp .inner-card { position:relative; z-index:1; height:100%; display:flex; flex-direction:column; justify-content:center; gap:6px; padding:8px; }
+        #addrApp .main-title { font-size:13px; font-weight:700; color:#1f5a3a; }
+        #addrApp .second-title { font-size:12px; color:#2b6b45; }
+        #addrApp .map-link { font-size:13px; color:var(--accent); text-decoration:underline; }
+        #addrApp .location { position:absolute; right:8px; top:10px; width:14px; height:14px; background:#226630; border-radius:50%; box-shadow:0 0 10px #c1c1c180; border:3px solid white; }
+        /* small-screen adjustments */
+        @media (max-width:520px) { #addrApp .reference { top: 36px; left: 0; } #addrApp .reference .card { width: 100%; left:0; } }
     </style>
 </head>
 <body class="font-modern">
@@ -523,7 +556,28 @@
                             <div class="section-title"><i class="fas fa-address-card"></i> Personal Details</div>
                             <div class="info-item">
                                 <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
-                                <div><div class="info-label">Address</div><div class="info-value">No 2, Jalan Orkid 1, Taman Sri Penawar<br>Bandar Penawar, 81930 Johor</div></div>
+                                <div>
+                                    <div class="info-label">Address</div>
+                                    <div class="info-value">
+                                        <div id="addrApp">
+                                            <a class="hover-card" href="https://www.google.com/maps/search/No+2+Jalan+Orkid+1+Taman+Sri+Penawar+Bandar+Penawar+81930+Johor/@1.5893334,104.2325876,17z?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoKLDEwMDc5MjA3MUgBUAM%3D" target="_blank" rel="noopener" style="cursor:pointer; display:inline-block; color:inherit; text-decoration:none;">
+                                                No 2, Jalan Orkid 1, Taman Sri Penawar<br>Bandar Penawar, 81930 Johor
+                                            </a>
+
+                                            <div class="reference" aria-hidden="true">
+                                                <div class="card" role="group" aria-label="Address preview">
+                                                    <div class="bg-map" style="background-image: url('');"></div>
+                                                    <div class="inner-card">
+                                                        <div class="main-title">Zaeim Sufi — Home</div>
+                                                        <div class="second-title">No 2, Jalan Orkid 1, Taman Sri Penawar</div>
+                                                        <a class="map-link" href="https://www.google.com/maps/search/No+2+Jalan+Orkid+1+Taman+Sri+Penawar+Bandar+Penawar+81930+Johor/@1.5893334,104.2325876,17z?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoKLDEwMDc5MjA3MUgBUAM%3D" target="_blank" rel="noopener">Open in Google Maps</a>
+                                                    </div>
+                                                    <span class="location" aria-hidden="true"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="info-item">
                                 <div class="info-icon"><i class="fas fa-flag"></i></div>
