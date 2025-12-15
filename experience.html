@@ -22,12 +22,13 @@
         /* Timeline image slots (clean card-like thumbnails) */
         .timeline-images {
             display: flex;
-            gap: 10px;
-            margin-top: 12px;
+            gap: 12px;
+            margin-top: 20px; /* increased spacing between text and images */
             flex-wrap: wrap;
             align-items: flex-start;
         }
         .timeline-image {
+            position: relative;
             width: calc(33.333% - 10px);
             max-width: 180px;
             border-radius: 10px;
@@ -35,18 +36,43 @@
             background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
             border: 1px solid rgba(255,255,255,0.03);
             box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            transition: transform 220ms ease, box-shadow 220ms ease;
+            will-change: transform;
         }
         .timeline-image img {
             width: 100%;
             height: 120px;
             object-fit: cover;
             display: block;
+            cursor: pointer; /* show clickable */
         }
         .timeline-image .caption {
             font-size: 12px;
             color: var(--text-secondary);
             padding: 8px;
+            text-align: center;
         }
+        /* overlay icon revealed on hover */
+        .timeline-image .overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            background: rgba(0,0,0,0.28);
+            opacity: 0;
+            transition: opacity 200ms ease;
+            font-size: 18px;
+            pointer-events: none; /* allow clicks to pass through to the img */
+        }
+        .timeline-image:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 18px 36px rgba(0,0,0,0.22);
+            z-index: 3;
+        }
+        .timeline-image:hover .overlay { opacity: 1; }
+
         @media (max-width:820px) {
             .timeline-image { width: calc(50% - 10px); max-width: none; }
         }
@@ -134,22 +160,31 @@
                     <span class="timeline-date">December 2024</span>
                     <div class="timeline-title">Head of Multimedia</div>
                     <div class="timeline-subtitle">Universiti Teknologi MARA (UiTM) – Sekretariat Rakan Muda UiTMJ, Johor</div>
-                    <p class="timeline-text">
-                        Led the multimedia team in managing all visual and digital content for the Youth Leadership Programme.
-                    </p>
-                    <ul class="timeline-text">
+                     <ul class="timeline-text">
                         <li>Led the multimedia team in managing all visual and digital content for the Youth Leadership Programme.</li>
                         <li>Designed and produced key promotional materials including banners, posters, and programme shirts to enhance branding and participant experience.</li>
                         <li>Created montage videos to capture and showcase the programme’s highlights and achievements.</li>
                         <li>Coordinated with event organizers and other departments to ensure multimedia assets aligned with the programme’s objectives and branding guidelines.</li>
                         <li>Ensured timely delivery of high-quality creative content that boosted participant engagement and programme visibility.</li>
-                    </ul>
+                     </ul>
 
                     <!-- Image slot: replace src with your images -->
                     <div class="timeline-images">
-                        <div class="timeline-image"><img src="images/youth-01.jpg" alt="Youth Leadership - banner" onclick="openImage(this.src, 'Banner / Promo')"><div class="caption">Banner / Promo</div></div>
-                        <div class="timeline-image"><img src="images/youth-02.jpg" alt="Youth Leadership - montage still" onclick="openImage(this.src, 'Montage still')"><div class="caption">Montage still</div></div>
-                        <div class="timeline-image"><img src="images/youth-03.jpg" alt="Youth Leadership - team" onclick="openImage(this.src, 'Team')"><div class="caption">Team</div></div>
+                        <div class="timeline-image">
+                            <div class="overlay"><i class="fas fa-search"></i></div>
+                            <img src="images/youth-01.jpg" alt="Youth Leadership - banner" onclick="openImage(this.src, 'Banner / Promo')">
+                            <div class="caption">Banner / Promo</div>
+                        </div>
+                        <div class="timeline-image">
+                            <div class="overlay"><i class="fas fa-search"></i></div>
+                            <img src="images/youth-02.jpg" alt="Youth Leadership - montage still" onclick="openImage(this.src, 'Montage still')">
+                            <div class="caption">Montage still</div>
+                        </div>
+                        <div class="timeline-image">
+                            <div class="overlay"><i class="fas fa-search"></i></div>
+                            <img src="images/youth-03.jpg" alt="Youth Leadership - team" onclick="openImage(this.src, 'Team')">
+                            <div class="caption">Team</div>
+                        </div>
                     </div>
                 </div>
 
@@ -158,23 +193,32 @@
                     <span class="timeline-date">28 July 2025 – 19 September 2025</span>
                     <div class="timeline-title">Pegawai Pentadbiran (Administrative Officer) — Internship Trainee</div>
                     <div class="timeline-subtitle">Institut Kemahiran Belia Negara (IKBN) Bandar Penawar</div>
-                    <p class="timeline-text">
-                        Developed and maintained the IKBN Library System and supported administrative and technical operations during the internship period.
-                    </p>
-                    <ul class="timeline-text">
-                        <li>Developed and maintained the IKBN Library System including database configuration, hosting migration, and interface improvement.</li>
-                        <li>Classified and imported more than 800 library materials into the digital system using the Dewey Decimal Classification.</li>
-                        <li>Produced the IKBN digital bulletin “Pena Penawar” and prepared design drafts for supervisor and director review.</li>
-                        <li>Assisted with administrative and technical duties such as device setup, Google Meet preparation, and library material organization.</li>
-                        <li>Developed an AI-based photography analysis system and website for the Innovation Program using Claude AI.</li>
-                        <li>Captured event photography and videography for official IKBN programmes including the Independence Day marching event.</li>
-                    </ul>
+                     <ul class="timeline-text">
+                         <li>Developed and maintained the IKBN Library System including database configuration, hosting migration, and interface improvement.</li>
+                         <li>Classified and imported more than 800 library materials into the digital system using the Dewey Decimal Classification.</li>
+                         <li>Produced the IKBN digital bulletin “Pena Penawar” and prepared design drafts for supervisor and director review.</li>
+                         <li>Assisted with administrative and technical duties such as device setup, Google Meet preparation, and library material organization.</li>
+                         <li>Developed an AI-based photography analysis system and website for the Innovation Program using Claude AI.</li>
+                         <li>Captured event photography and videography for official IKBN programmes including the Independence Day marching event.</li>
+                     </ul>
 
                     <!-- Image slot: replace src with your internship photos -->
                     <div class="timeline-images">
-                        <div class="timeline-image"><img src="images/ikbn-01.jpg" alt="IKBN - system dashboard" onclick="openImage(this.src, 'Library System')"><div class="caption">Library System</div></div>
-                        <div class="timeline-image"><img src="images/ikbn-02.jpg" alt="IKBN - digitized materials" onclick="openImage(this.src, 'Digitized materials')"><div class="caption">Digitized materials</div></div>
-                        <div class="timeline-image"><img src="images/ikbn-03.jpg" alt="IKBN - event photography" onclick="openImage(this.src, 'Event photo')"><div class="caption">Event photo</div></div>
+                        <div class="timeline-image">
+                            <div class="overlay"><i class="fas fa-search"></i></div>
+                            <img src="images/ikbn-01.jpg" alt="IKBN - system dashboard" onclick="openImage(this.src, 'Library System')">
+                            <div class="caption">Library System</div>
+                        </div>
+                        <div class="timeline-image">
+                            <div class="overlay"><i class="fas fa-search"></i></div>
+                            <img src="images/ikbn-02.jpg" alt="IKBN - digitized materials" onclick="openImage(this.src, 'Digitized materials')">
+                            <div class="caption">Digitized materials</div>
+                        </div>
+                        <div class="timeline-image">
+                            <div class="overlay"><i class="fas fa-search"></i></div>
+                            <img src="images/ikbn-03.jpg" alt="IKBN - event photography" onclick="openImage(this.src, 'Event photo')">
+                            <div class="caption">Event photo</div>
+                        </div>
                     </div>
                 </div>
 
@@ -195,9 +239,21 @@
 
                     <!-- Image slot: replace src with your event photos -->
                     <div class="timeline-images">
-                        <div class="timeline-image"><img src="images/chess-01.jpg" alt="Chess event - stage" onclick="openImage(this.src, 'Stage / Setup')"><div class="caption">Stage / Setup</div></div>
-                        <div class="timeline-image"><img src="images/chess-02.jpg" alt="Chess event - match" onclick="openImage(this.src, 'Match')"><div class="caption">Match</div></div>
-                        <div class="timeline-image"><img src="images/chess-03.jpg" alt="Chess event - results" onclick="openImage(this.src, 'Results entry')"><div class="caption">Results entry</div></div>
+                        <div class="timeline-image">
+                            <div class="overlay"><i class="fas fa-search"></i></div>
+                            <img src="images/chess-01.jpg" alt="Chess event - stage" onclick="openImage(this.src, 'Stage / Setup')">
+                            <div class="caption">Stage / Setup</div>
+                        </div>
+                        <div class="timeline-image">
+                            <div class="overlay"><i class="fas fa-search"></i></div>
+                            <img src="images/chess-02.jpg" alt="Chess event - match" onclick="openImage(this.src, 'Match')">
+                            <div class="caption">Match</div>
+                        </div>
+                        <div class="timeline-image">
+                            <div class="overlay"><i class="fas fa-search"></i></div>
+                            <img src="images/chess-03.jpg" alt="Chess event - results" onclick="openImage(this.src, 'Results entry')">
+                            <div class="caption">Results entry</div>
+                        </div>
                      </div>
                 </div>
             </div>
