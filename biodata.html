@@ -1,11 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Biodata - Muhammad Zaeim Sufi</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        /* Layout fixes (keep scroll settings as-is) */
+        html, body {
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .page-content {
+            max-width: 1200px; /* restored to 1200px */
+            margin: 0 auto;
+            padding: 40px 24px; /* slightly tighter horizontal padding */
+            box-sizing: border-box;
+        }
+
+        /* Profile Section Layout - slightly narrower left column and reduced gap */
+        .profile-section {
+            display: grid;
+            grid-template-columns: minmax(260px, 380px) 1fr; /* slightly wider sidebar */
+            gap: 24px; /* reduced from 48px */
+            align-items: stretch; /* make columns match heights */
+        }
+
+        /* Make profile header slightly smaller and fixed min-height so it lines up with cards */
+        .profile-card {
+            position: sticky;
+            top: 100px;
+            max-width: 380px;
+            width: 100%;
+            box-sizing: border-box;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-self: stretch; /* ensure it stretches to match the right column */
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            will-change: transform;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+            border-color: var(--accent);
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            padding: 40px 24px;          /* restored normal padding */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        /* Make profile body expand so the card matches height of the main content */
+        .profile-body {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Use grid for cards so they line up in neat rows on wider screens */
+        .content-area {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(360px, 1fr)); /* two wider columns */
+            gap: 32px;
+            align-items: start;
+            grid-auto-rows: auto;
+            min-width: 0; /* allow children to shrink correctly */
+        }
+
+        /* Ensure the first card spans full width (single card above) */
+        .content-area > .card:first-child {
+            grid-column: 1 / -1;
+        }
+
+        /* Ensure each card fills its cell and keeps consistent spacing */
+        .content-area .card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .card-head { margin-bottom: 16px; } /* tighter spacing so headers align visually */
+
+        /* Info items: allow wrapping and prevent fixed-width behavior */
+        .info-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            min-width: 0;
+        }
+
+        .info-value {
+            word-break: break-word;
+            white-space: normal;
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
+            gap: 10px;
+        }
+
+        .social-grid a {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 44px;
+        }
+
+        /* New: side-by-side about-me card (image left, text right) */
+        .about-me-side {
+            display: flex;
+            gap: 18px;
+            align-items: stretch;       /* stretch so image fills the card height */
+            align-content: stretch;
+        }
+        /* make this card span full width like "About Me" */
+        .content-area > .about-me-card { grid-column: 1 / -1; }
+        .about-me-side img {
+            width: 220px;               /* wider, matches card visual weight */
+            height: 100%;               /* fill available height of the card */
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+            display: block;
+        }
+        .about-me-text {
+            flex: 1;
+            color: var(--text-secondary);
+            font-size: 16px;
+            line-height: 1.7;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        @media (max-width: 900px) {
+            .about-me-side {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .about-me-side img {
+                width: 100%;
+                max-width: 220px;
+                height: auto;
+            }
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 900px) {
+            .content-area { grid-template-columns: 1fr; } /* single column on tablets/phones */
+            .profile-section {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .profile-card {
+                position: static;
+                max-width: none;
+            }
+
+            .spotify-widget, .datetime-widget, .weather-widget-floating {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile-section {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .profile-card {
+                position: static;
+                max-width: none;
+            }
+
+            .spotify-widget, .datetime-widget, .weather-widget-floating {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-content { padding: 20px 12px; }
+        }
+    </style>
 </head>
 <body class="font-modern">
     <!-- Footer -->
@@ -45,7 +246,7 @@
                 <span class="spotify-badge">Live</span>
             </div>
             <button class="spotify-toggle" onclick="toggleSpotify()">
-                <i class="fas fa-minus" id="spotifyToggleIcon"></i>
+                <i class="fas fa-music" id="spotifyToggleIcon"></i>
             </button>
         </div>
         <div class="spotify-player-container">
@@ -200,58 +401,144 @@
 
                     <div class="card">
                         <div class="card-head">
-                            <div class="card-icon"><i class="fas fa-star"></i></div>
-                            <div class="card-title">Core Competencies</div>
+                            <div class="card-icon"><i class="fas fa-database"></i></div>
+                            <div class="card-title">Information Management</div>
                         </div>
-                        <div class="skills-grid">
-                            <div class="skill-group">
-                                <div class="skill-group-title"><i class="fas fa-database"></i> Information Management</div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Digital Records Management</span><span class="skill-percent">85%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%"></div></div></div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Metadata Standards (MARC21)</span><span class="skill-percent">80%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 80%"></div></div></div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Information Governance</span><span class="skill-percent">75%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 75%"></div></div></div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Data Organization & Classification</span><span class="skill-percent">78%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 78%"></div></div></div>
-                            </div>
-                            <div class="skill-group">
-                                <div class="skill-group-title"><i class="fas fa-palette"></i> Design & Multimedia</div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Adobe Photoshop</span><span class="skill-percent">90%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 90%"></div></div></div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Adobe Illustrator</span><span class="skill-percent">85%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%"></div></div></div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Canva</span><span class="skill-percent">95%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 95%"></div></div></div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Adobe Premiere Pro</span><span class="skill-percent">80%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 80%"></div></div></div>
-                            </div>
-                            <div class="skill-group">
-                                <div class="skill-group-title"><i class="fas fa-code"></i> Programming & Software</div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">C++</span><span class="skill-percent">70%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 70%"></div></div></div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">SQL</span><span class="skill-percent">65%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 65%"></div></div></div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">HTML/CSS</span><span class="skill-percent">75%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 75%"></div></div></div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Microsoft Office 365</span><span class="skill-percent">88%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 88%"></div></div></div>
-                            </div>
-                            <div class="skill-group">
-                                <div class="skill-group-title"><i class="fas fa-users"></i> Soft Skills</div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Leadership & Project Coordination</span><span class="skill-percent">88%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 88%"></div></div></div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Team Collaboration</span><span class="skill-percent">92%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 92%"></div></div></div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Problem Solving</span><span class="skill-percent">85%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%"></div></div></div>
-                                <div class="skill"><div class="skill-info"><span class="skill-name">Research & Analytical Thinking</span><span class="skill-percent">83%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 83%"></div></div></div>
-                            </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Digital Records Management</span><span class="skill-percent">85%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Metadata Standards (MARC21)</span><span class="skill-percent">80%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 80%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Information Governance</span><span class="skill-percent">75%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 75%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Data Organization & Classification</span><span class="skill-percent">78%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 78%"></div></div>
                         </div>
                     </div>
 
                     <div class="card">
                         <div class="card-head">
-                            <div class="card-icon"><i class="fas fa-lightbulb"></i></div>
-                            <div class="card-title">Professional Interests</div>
+                            <div class="card-icon"><i class="fas fa-palette"></i></div>
+                            <div class="card-title">Design & Multimedia</div>
                         </div>
-                        <div style="font-size: 16px; line-height: 1.8; color: var(--text-secondary);">
-                            <p style="margin-bottom: 20px;"><strong>1. Software Development & Programming</strong></p>
-                            <p style="margin-bottom: 20px; padding-left: 20px;">Passionate about coding and developing practical applications, with a focus on improving user experience and problem-solving through programming.</p>
-                            
-                            <p style="margin-bottom: 20px;"><strong>2. Multimedia & Graphic Design</strong></p>
-                            <p style="margin-bottom: 20px; padding-left: 20px;">Enthusiastic about creating visually compelling digital content using tools like Adobe Photoshop, Illustrator, and Premiere Pro, combining creativity with technical skills.</p>
-                            
-                            <p style="margin-bottom: 20px;"><strong>3. Information Management & Digital Preservation</strong></p>
-                            <p style="margin-bottom: 20px; padding-left: 20px;">Interested in digital records management, metadata systems, information governance, and supporting digitization initiatives.</p>
-                            
-                            <p style="margin-bottom: 20px;"><strong>4. Continuous Learning & Professional Growth</strong></p>
-                            <p style="padding-left: 20px;">Committed to expanding technical knowledge and skills through online courses, certifications, and hands-on projects in software and multimedia fields.</p>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Adobe Photoshop</span><span class="skill-percent">90%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 90%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Adobe Illustrator</span><span class="skill-percent">85%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Canva</span><span class="skill-percent">95%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 95%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Adobe Premiere Pro</span><span class="skill-percent">80%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 80%"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-head">
+                            <div class="card-icon"><i class="fas fa-code"></i></div>
+                            <div class="card-title">Programming & Software</div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">C++</span><span class="skill-percent">70%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 70%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">SQL</span><span class="skill-percent">65%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 65%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">HTML/CSS</span><span class="skill-percent">75%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 75%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Microsoft Office 365</span><span class="skill-percent">88%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 88%"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-head">
+                            <div class="card-icon"><i class="fas fa-users"></i></div>
+                            <div class="card-title">Soft Skills</div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Leadership & Project Coordination</span><span class="skill-percent">88%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 88%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Team Collaboration</span><span class="skill-percent">92%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 92%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Problem Solving</span><span class="skill-percent">85%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <div class="skill-info"><span class="skill-name">Research & Analytical Thinking</span><span class="skill-percent">83%</span></div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 83%"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-head">
+                            <div class="card-icon"><i class="fas fa-code"></i></div>
+                            <div class="card-title">Software Development & Programming</div>
+                        </div>
+                        <p style="font-size: 16px; line-height: 1.8; color: var(--text-secondary);">
+                            Passionate about coding and developing practical applications, with a focus on improving user experience and problem-solving through programming.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-head">
+                            <div class="card-icon"><i class="fas fa-palette"></i></div>
+                            <div class="card-title">Multimedia & Graphic Design</div>
+                        </div>
+                        <p style="font-size: 16px; line-height: 1.8; color: var(--text-secondary);">
+                            Enthusiastic about creating visually compelling digital content using tools like Adobe Photoshop, Illustrator, and Premiere Pro, combining creativity with technical skills.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-head">
+                            <div class="card-icon"><i class="fas fa-database"></i></div>
+                            <div class="card-title">Information Management & Digital Preservation</div>
+                        </div>
+                        <p style="font-size: 16px; line-height: 1.8; color: var(--text-secondary);">
+                            Interested in digital records management, metadata systems, information governance, and supporting digitization initiatives.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-head">
+                            <div class="card-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="card-title">Continuous Learning & Professional Growth</div>
+                        </div>
+                        <p style="font-size: 16px; line-height: 1.8; color: var(--text-secondary);">
+                            Committed to expanding technical knowledge and skills through online courses, certifications, and hands-on projects in software and multimedia fields.
+                        </p>
+                    </div>
+
+                    <!-- New: side-by-side image + explanation card -->
+                    <div class="card about-me-card">
+                        <div class="about-me-side">
+                            <img src="me.jpg" alt="Me — Zaeim Sufi">
+                            <div class="about-me-text">
+                                <h3 style="margin:0 0 8px 0;">Snapshot</h3>
+                                <p>Add a short personal description here — background, interests, or a short bio. Replace this text with your final explanation about yourself.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
