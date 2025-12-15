@@ -31,8 +31,21 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            position: relative;
         }
-        .modal-content img { max-width: 100%; max-height: 80vh; border-radius: 8px; display:block; }
+        .modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+            display: block;
+            transform: translateY(8px) scale(0.98);
+            opacity: 0;
+            transition: transform 260ms cubic-bezier(.2,.8,.2,1), opacity 220ms ease;
+        }
+        .modal-overlay.active .modal-content img {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
         .modal-close {
             align-self: flex-end;
             background: transparent;
@@ -52,6 +65,115 @@
             color: #ffffff !important;
             filter: none !important;
             opacity: 1 !important;
+        }
+
+        /* modal open animation */
+        .modal-overlay { --modal-scale: 0.96; }
+        .modal-content {
+            transform: scale(var(--modal-scale));
+            opacity: 0;
+            transition: transform 220ms cubic-bezier(.2,.8,.2,1), opacity 180ms ease;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* family name click pulse */
+        .family-name { cursor: pointer; display:inline-block; transition: transform 160ms ease, color 160ms ease; }
+        .family-name.pulse { transform: scale(1.06); color: var(--accent); }
+
+        /* modal layout: prev / image / next (side-by-side) */
+        .modal-layout {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .modal-btn {
+            background: rgba(0,0,0,0.6);
+            border: none;
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .modal-btn:focus { outline: 2px solid var(--accent); }
+
+        /* responsive: stack buttons on narrow screens */
+        @media (max-width: 700px) {
+            .modal-layout { flex-direction: column; }
+            .modal-btn { width: 48px; height: 48px; }
+        }
+
+        /* Ensure modal content also animates */
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* Lightbox styles (gallery-style) */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .lightbox.active {
+            display: flex;
+        }
+        .lightbox-close,
+        .lightbox-prev,
+        .lightbox-next {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .lightbox-close:hover,
+        .lightbox-prev:hover,
+        .lightbox-next:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        /* close stays top-right */
+        .lightbox-close { top: 20px; right: 20px; }
+        /* prev/next centered vertically at left/right */
+        .lightbox-prev { top: 50%; left: 20px; transform: translateY(-50%); }
+        .lightbox-next { top: 50%; right: 20px; transform: translateY(-50%); }
+        .lightbox-content {
+            text-align: center;
+        }
+        .lightbox-content img {
+            max-width: 90%;
+            max-height: 80vh;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 0 auto;
+        }
+        .lightbox-description {
+            color: #fff;
+            font-size: 16px;
+            margin-top: 12px;
         }
     </style>
 </head>
@@ -217,52 +339,89 @@
                         <div class="family-avatar"><i class="fas fa-child"></i></div>
                         <div class="family-name">Muhammad Rayyan Shafiq</div>
                         <div class="family-relation">Younger Brother 2</div>
-                        <div class="family-age">11 years old<br>
+                        <div class="family-age">11 years old<br></div>
                     </div>
                 </div>
              </div>
          </div>
      </div>
  
-    <!-- Modal for family images -->
-    <div id="modalOverlay" class="modal-overlay" aria-hidden="true" role="dialog">
-        <div class="modal-content" role="document">
-            <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
-            <img id="modalImage" src="" alt="Family member">
-            <div id="modalCaption" style="color:var(--text-secondary,#ddd); font-size:14px;"></div>
+    <!-- Lightbox (gallery-style, reused from gallery.html) -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
+        <button class="lightbox-prev" onclick="navigateLightbox(-1)"><i class="fas fa-chevron-left"></i></button>
+        <button class="lightbox-next" onclick="navigateLightbox(1)"><i class="fas fa-chevron-right"></i></button>
+        <div class="lightbox-content">
+            <img id="lightboxImage" src="" alt="Family Image">
+            <div class="lightbox-description" id="lightboxDescription"></div>
         </div>
     </div>
+ 
     <script>
-        // open modal when clicking a family member
+        // Family gallery-style lightbox (matches gallery.html behavior)
         (function(){
-            const members = document.querySelectorAll('.family-member[data-img]');
-            const overlay = document.getElementById('modalOverlay');
-            const imgEl = document.getElementById('modalImage');
-            const caption = document.getElementById('modalCaption');
-            const closeBtn = document.getElementById('modalClose');
+            const familyImages = [
+                { src: 'dad.jpg', description: 'Jamaludin bin Daud' },
+                { src: 'mom.jpg', description: 'Normalidza binti Mohd Dalil' },
+                { src: 'sister.jpg', description: 'Nurjazlin Sofia' },
+                { src: 'me.jpg', description: 'Muhammad Zaeim Sufi' },
+                { src: 'bro1.jpg', description: 'Muhammad Darwish Syabil' },
+                { src: 'bro2.jpg', description: 'Muhammad Rayyan Shafiq' }
+            ];
 
-            members.forEach(m => {
-                m.addEventListener('click', () => {
-                    const src = m.getAttribute('data-img');
-                    imgEl.src = src;
-                    imgEl.alt = m.querySelector('.family-name')?.textContent || 'Family member';
-                    caption.textContent = m.querySelector('.family-name')?.textContent || '';
-                    overlay.classList.add('active');
-                    overlay.setAttribute('aria-hidden','false');
-                });
-            });
+            let currentImageIndex = 0;
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxDescription = document.getElementById('lightboxDescription');
 
-            function closeModal(){
-                overlay.classList.remove('active');
-                overlay.setAttribute('aria-hidden','true');
-                imgEl.src = '';
+            function openLightbox(index) {
+                currentImageIndex = (index + familyImages.length) % familyImages.length;
+                lightboxImage.src = familyImages[currentImageIndex].src;
+                lightboxDescription.textContent = familyImages[currentImageIndex].description;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            function navigateLightbox(direction) {
+                currentImageIndex += direction;
+                if (currentImageIndex < 0) currentImageIndex = familyImages.length - 1;
+                if (currentImageIndex >= familyImages.length) currentImageIndex = 0;
+                lightboxImage.src = familyImages[currentImageIndex].src;
+                lightboxDescription.textContent = familyImages[currentImageIndex].description;
             }
 
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) closeModal();
+            // attach to family cards (open by card click; name click still pulses)
+            const members = Array.from(document.querySelectorAll('.family-member[data-img]'));
+            members.forEach((m, idx) => {
+                const nameEl = m.querySelector('.family-name');
+                m.addEventListener('click', () => openLightbox(idx));
+                if (nameEl) {
+                    nameEl.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        nameEl.classList.add('pulse');
+                        setTimeout(() => nameEl.classList.remove('pulse'), 180);
+                        openLightbox(idx);
+                    });
+                }
             });
-            closeBtn.addEventListener('click', closeModal);
-            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+            // global controls
+            document.querySelector('.lightbox-prev').addEventListener('click', () => navigateLightbox(-1));
+            document.querySelector('.lightbox-next').addEventListener('click', () => navigateLightbox(1));
+            document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+
+            // keyboard + backdrop
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') navigateLightbox(-1);
+                if (e.key === 'ArrowRight') navigateLightbox(1);
+            });
+            document.getElementById('lightbox').addEventListener('click', function(e) {
+                if (e.target === this) closeLightbox();
+            });
         })();
     </script>
     <script src="script.js"></script>
