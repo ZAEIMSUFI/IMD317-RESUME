@@ -81,10 +81,11 @@
         /* Use grid for cards so they line up in neat rows on wider screens */
         .content-area {
             display: grid;
-            grid-template-columns: repeat(2, minmax(360px, 1fr)); /* two wider columns */
+            /* equal width columns for consistent card widths */
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 32px;
-            align-items: start;
-            grid-auto-rows: auto;
+            grid-auto-rows: 1fr;   /* equal row heights */
+            align-items: stretch;
             min-width: 0; /* allow children to shrink correctly */
         }
 
@@ -97,8 +98,20 @@
         .content-area .card {
             display: flex;
             flex-direction: column;
-            height: 100%;
+            width: 100%;
+            height: 100%;      /* fill the grid cell */
+            min-height: 0;     /* allow flex children to shrink (avoid overflow) */
             box-sizing: border-box;
+            justify-content: flex-start;
+            align-self: stretch;
+        }
+
+        /* Prevent about-me image from stretching to match grid row height */
+        .about-me-side img {
+            height: auto; /* was 100% */
+            max-height: 320px;
+            width: 220px;
+            object-fit: cover;
         }
 
         .card-head { margin-bottom: 16px; } /* tighter spacing so headers align visually */
@@ -244,6 +257,63 @@
             color: #ffffff !important;
             filter: none !important;
             opacity: 1 !important;
+        }
+
+        /* Right-column: improved card spacing and typography */
+        .content-area .card {
+            padding: 20px;           /* inner breathing room */
+            border-radius: 10px;
+            background: var(--bg-card);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;     /* clearer separation from card body */
+        }
+        .card-head .card-icon { font-size: 20px; }
+        .card-head .card-title { font-size: 18px; font-weight: 700; }
+
+        .content-area .card p {
+            margin: 0 0 14px 0;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 15.5px;
+        }
+
+        /* Skills layout improvements */
+        .skill { margin-bottom: 14px; }
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .skill-name { font-weight: 600; }
+        .skill-percent { color: var(--text-secondary); font-size: 13px; }
+
+        .skill-bar-bg {
+            height: 12px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .skill-bar-fill {
+            height: 100%;
+            border-radius: 8px;
+            transition: width 400ms ease;
+        }
+
+        /* Small screens: reduce padding but keep spacing */
+        @media (max-width: 900px) {
+            .content-area .card { padding: 14px; }
+            .card-head { margin-bottom: 12px; }
         }
     </style>
 </head>
@@ -411,12 +481,12 @@
                             <div class="section-title"><i class="fas fa-share-alt"></i> Social Links</div>
                             <div class="social-grid">
                                 <a href="https://linkedin.com" class="social-btn" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                                <a href="https://github.com" class="social-btn" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                                <a href="https://github.com/ZAEIMSUFI" class="social-btn" target="_blank" title="GitHub: @ZAEIMSUFI"><i class="fab fa-github"></i></a>
                                 <a href="https://instagram.com/bladeee_" class="social-btn" target="_blank" title="Instagram: @bladeee_"><i class="fab fa-instagram"></i></a>
                                 <a href="https://tiktok.com/@d0ll_ax" class="social-btn" target="_blank" title="TikTok: @d0ll_ax"><i class="fab fa-tiktok"></i></a>
                                 <a href="https://discord.com/users/blade_51" class="social-btn" target="_blank" title="Discord: blade_51"><i class="fab fa-discord"></i></a>
                                 <a href="https://twitter.com/zaeimsufii" class="social-btn" target="_blank" title="Twitter: @zaeimsufii"><i class="fab fa-twitter"></i></a>
-                                <a href="https://facebook.com" class="social-btn" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a href="https://facebook.com/blade.zaeim" class="social-btn" target="_blank" title="Facebook: @blade.zaeim"><i class="fab fa-facebook-f"></i></a>
                                 <a href="https://dribbble.com" class="social-btn" target="_blank" title="Dribbble"><i class="fab fa-dribbble"></i></a>
                             </div>
                         </div>
