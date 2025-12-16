@@ -365,10 +365,8 @@
         .profile-card .skill-section { margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.03); }
         .profile-card .skill-section .section-title { font-size: 13px; font-weight:700; margin-bottom:8px; display:block; }
         .profile-card .skill-list { font-size: 14px; color: var(--text-secondary); line-height: 1.5; padding-left: 14px; margin: 0; list-style: disc; }
-        .profile-card .skill-list li { margin-bottom: 12px; }
-        .profile-card .skill-heading { display: block; font-weight: 700; margin-bottom: 6px; }
-        .profile-card .skill-desc { margin: 0 0 8px 0; color: var(--text-secondary); line-height: 1.45; }
-        .profile-card .skill-block { margin-bottom: 14px; }
+        /* numbered variant for specific lists */
+        .profile-card .skill-list.numbered { list-style: decimal; padding-left: 22px; }
 
         /* Justify Snapshot and About Me paragraphs for cleaner edges */
         .about-me-text p { text-align: justify; text-justify: inter-word; }
@@ -618,11 +616,11 @@
                         <!-- Added: Technical Skills -->
                         <div class="info-section skill-section">
                             <div class="section-title"><i class="fas fa-cogs"></i> TECHNICAL SKILLS</div>
-                            <ul class="skill-list">
+                            <ol class="skill-list numbered">
                                 <li><strong>Platforms &amp; Software:</strong> Microsoft Excel (Basic), Microsoft PowerPoint, Microsoft 365, Canva, Adobe Photoshop, Adobe Illustrator</li>
                                 <li><strong>Programming Languages:</strong> SQL (Basic), C++ (Basic)</li>
                                 <li><strong>Design &amp; Multimedia Tools:</strong> Canva, Adobe Photoshop, Adobe Illustrator</li>
-                            </ul>
+                            </ol>
                         </div>
 
                         <!-- Added: Skills & Interest -->
