@@ -261,12 +261,20 @@
                         </div>
                         <div class="timeline-image">
                             <div class="overlay"><i class="fas fa-search"></i></div>
-                            <img src="images/chess-02.jpg" alt="Chess event - match" onclick="openImage(this.src, 'Match')">
+                            <div onclick="openImage('images/chess-02.mp4','Match','video')" style="cursor:pointer;">
+                                <video muted loop playsinline preload="metadata" poster="images/chess-02.jpg" aria-hidden="true">
+                                    <source src="images/chess-02.mp4" type="video/mp4">
+                                </video>
+                            </div>
                             <div class="caption">Match</div>
                         </div>
                         <div class="timeline-image">
                             <div class="overlay"><i class="fas fa-search"></i></div>
-                            <img src="images/chess-03.jpg" alt="Chess event - results" onclick="openImage(this.src, 'Results entry')">
+                            <div onclick="openImage('images/chess-03.mp4','Results entry','video')" style="cursor:pointer;">
+                                <video muted loop playsinline preload="metadata" poster="images/chess-03.jpg" aria-hidden="true">
+                                    <source src="images/chess-03.mp4" type="video/mp4">
+                                </video>
+                            </div>
                             <div class="caption">Results entry</div>
                         </div>
                      </div>
