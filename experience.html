@@ -48,6 +48,15 @@
             display: block;
             cursor: pointer; /* show clickable */
         }
+        /* video thumbnail matches image thumbnail sizing */
+        .timeline-image video {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+            background: #000;
+        }
         .timeline-image .caption {
             font-size: 12px;
             color: var(--text-secondary);
@@ -179,8 +188,12 @@
                         </div>
                         <div class="timeline-image">
                             <div class="overlay"><i class="fas fa-search"></i></div>
-                            <img src="images/youth-02.jpg" alt="Youth Leadership - montage still" onclick="openImage(this.src, 'Montage still')">
-                            <div class="caption">Montage still</div>
+                            <div onclick="openImage('images/youth-02.mp4','Montage video','video')" style="cursor:pointer;">
+                                <video muted loop playsinline preload="metadata" poster="images/youth-02.jpg" aria-hidden="true">
+                                    <source src="images/youth-02.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="caption">Montage video</div>
                         </div>
                         <div class="timeline-image">
                             <div class="overlay"><i class="fas fa-search"></i></div>
@@ -387,7 +400,11 @@
     <!-- Image modal (used by timeline images) -->
     <div id="imageModal" class="img-modal" onclick="if(event.target===this) closeImage()">
         <div class="modal-card" role="dialog" aria-modal="true">
-            <img id="modalImg" class="modal-img" src="" alt="">
+            <img id="modalImg" class="modal-img" src="" alt="" style="display:block;">
+            <video id="modalVideo" class="modal-img" controls style="display:none; width:100%; height:min(80vh,720px); background:#000;">
+                <source id="modalVideoSource" src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
             <div class="modal-footer">
                 <div class="modal-caption" id="modalCaption"></div>
                 <button class="modal-close" aria-label="Close" onclick="closeImage()">&times;</button>
@@ -397,21 +414,41 @@
 
     <script src="script.js"></script>
     <script>
-        function openImage(src, caption) {
+        function openImage(src, caption, type) {
             const modal = document.getElementById('imageModal');
             const img = document.getElementById('modalImg');
+            const vid = document.getElementById('modalVideo');
+            const vidSource = document.getElementById('modalVideoSource');
             const cap = document.getElementById('modalCaption');
-            img.src = src;
-            img.alt = caption || '';
             cap.textContent = caption || '';
+            const isVideo = type === 'video' || (/\.mp4$/i).test(src);
+            if (isVideo) {
+                img.style.display = 'none';
+                vid.style.display = 'block';
+                vidSource.src = src;
+                vid.load();
+                // attempt to autoplay (may be blocked by browser policies if not muted)
+                vid.play().catch(()=>{});
+            } else {
+                vid.pause();
+                vid.style.display = 'none';
+                vidSource.src = '';
+                img.style.display = 'block';
+                img.src = src;
+                img.alt = caption || '';
+            }
             modal.classList.add('open');
             document.body.style.overflow = 'hidden';
         }
         function closeImage() {
             const modal = document.getElementById('imageModal');
             const img = document.getElementById('modalImg');
+            const vid = document.getElementById('modalVideo');
+            const vidSource = document.getElementById('modalVideoSource');
             modal.classList.remove('open');
-            img.src = '';
+            // reset media
+            if (vid) { vid.pause(); vidSource.src = ''; vid.style.display = 'none'; }
+            if (img) { img.src = ''; img.style.display = 'block'; }
             document.body.style.overflow = '';
         }
         document.addEventListener('keydown', function(e){
